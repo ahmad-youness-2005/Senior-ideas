@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Senior Ideas Hub</title>
+    <link rel="stylesheet" href="admin-styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="admin-container">
+            <div class="admin-logo">
+                <i class="fas fa-cog"></i>
+                <span>Admin Panel</span>
+            </div>
+            <div class="admin-nav">
+                <a href="index.html" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Main Site
+                </a>
+                <button class="btn btn-outline" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Login Section -->
+    <div id="admin-login" class="admin-login">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <i class="fas fa-shield-alt"></i>
+                    <h2>Admin Access Required</h2>
+                    <p>Please login to access the admin panel</p>
+                </div>
+                <form id="admin-login-form" class="admin-form">
+                    <div class="form-group">
+                        <label for="admin-email">Email</label>
+                        <input type="email" id="admin-email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="admin-password">Password</label>
+                        <input type="password" id="admin-password" name="password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-full">
+                        <i class="fas fa-sign-in-alt"></i>
+                        Login to Admin Panel
+                    </button>
+                </form>
+                <div class="login-footer">
+                    <p style="font-size: 0.8rem; color: #64748b;">Contact administrator for access credentials</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="admin-dashboard" style="display: none;">
+        <div class="admin-container">
+            <!-- Dashboard Stats -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-ideas">0</h3>
+                        <p>Total Ideas</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-calendar-day"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="today-ideas">0</h3>
+                        <p>Today's Ideas</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="total-users">0</h3>
+                        <p>Registered Users</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-content">
+                        <h3 id="active-categories">0</h3>
+                        <p>Active Categories</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Admin Controls -->
+            <div class="admin-controls">
+                <div class="search-box">
+                    <input type="text" id="idea-search" placeholder="Search ideas by title, description, or author...">
+                    <i class="fas fa-search"></i>
+                </div>
+                <div class="filter-controls">
+                    <select id="category-filter">
+                        <option value="">All Categories</option>
+                        <option value="technology">Technology</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="education">Education</option>
+                        <option value="environment">Environment</option>
+                        <option value="community">Community</option>
+                        <option value="business">Business</option>
+                        <option value="other">Other</option>
+                    </select>
+                    <select id="sort-filter">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="category">Sort by Category</option>
+                        <option value="author">Sort by Author</option>
+                    </select>
+                    <button class="btn btn-outline" id="export-btn">
+                        <i class="fas fa-download"></i>
+                        Export Ideas
+                    </button>
+                </div>
+            </div>
+
+            <!-- Ideas List -->
+            <div class="ideas-section">
+                <div class="section-header">
+                    <h2>Submitted Ideas</h2>
+                    <div class="view-controls">
+                        <button class="view-btn active" id="grid-view">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button class="view-btn" id="list-view">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="ideas-container" id="ideas-container">
+                    <!-- Ideas will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Idea Detail Modal -->
+    <div id="idea-modal" class="modal">
+        <div class="modal-content idea-detail-modal">
+            <div class="modal-header">
+                <h2 id="modal-idea-title">Idea Details</h2>
+                <span class="close" id="idea-modal-close">&times;</span>
+            </div>
+            <div class="modal-body" id="modal-idea-content">
+                <!-- Idea details will be populated here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Success/Error Messages -->
+    <div id="success-message" class="message success-message">
+        <i class="fas fa-check-circle"></i>
+        <span id="success-text">Operation successful!</span>
+    </div>
+
+    <div id="error-message" class="message error-message">
+        <i class="fas fa-exclamation-circle"></i>
+        <span id="error-text">An error occurred!</span>
+    </div>
+
+    <script src="admin-script.js"></script>
+</body>
+</html>
