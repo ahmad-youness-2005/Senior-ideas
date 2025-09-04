@@ -365,6 +365,42 @@ document.addEventListener('scroll', () => {
     if (parallax) {
         parallax.style.transform = `translateY(${speed}px)`;
     }
+    
+    // Enhanced card animations on scroll
+    const cards = document.querySelectorAll('.idea-card');
+    cards.forEach((card, index) => {
+        const rect = card.getBoundingClientRect();
+        const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
+        
+        if (isVisible) {
+            card.style.animationPlayState = 'running';
+            // Add subtle rotation based on scroll position
+            const rotation = (scrolled * 0.1 + index * 10) % 360;
+            card.style.setProperty('--scroll-rotation', `${rotation}deg`);
+        }
+    });
+});
+
+// Add mouse movement effects to cards
+document.addEventListener('mousemove', (e) => {
+    const cards = document.querySelectorAll('.idea-card');
+    const mouseX = e.clientX / window.innerWidth;
+    const mouseY = e.clientY / window.innerHeight;
+    
+    cards.forEach((card, index) => {
+        const rect = card.getBoundingClientRect();
+        const cardCenterX = rect.left + rect.width / 2;
+        const cardCenterY = rect.top + rect.height / 2;
+        
+        const deltaX = (e.clientX - cardCenterX) / window.innerWidth;
+        const deltaY = (e.clientY - cardCenterY) / window.innerHeight;
+        
+        const moveX = deltaX * 10;
+        const moveY = deltaY * 10;
+        
+        card.style.setProperty('--mouse-x', `${moveX}px`);
+        card.style.setProperty('--mouse-y', `${moveY}px`);
+    });
 });
 
 // Add loading animation for form submissions
