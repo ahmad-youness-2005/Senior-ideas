@@ -3,6 +3,9 @@ let currentUser = null;
 let ideas = JSON.parse(localStorage.getItem('ideas')) || [];
 let users = JSON.parse(localStorage.getItem('users')) || [];
 
+// API Configuration - will be set by config.js
+const API_BASE_URL = window.APP_CONFIG?.API_BASE_URL || 'http://localhost:3000';
+
 // Allowed admin emails
 const ALLOWED_ADMIN_EMAILS = [
     'younes.ahmad2024@gmail.com',
@@ -85,8 +88,14 @@ function setupEventListeners() {
         }
     });
     
-    learnMoreBtn.addEventListener('click', () => {
+    learnMoreBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        console.log('Learn More button clicked');
         document.getElementById('about').scrollIntoView({ behavior: 'smooth' });
+    });
+    
+    learnMoreBtn.addEventListener('mouseenter', () => {
+        console.log('Learn More button hovered');
     });
     
     // Modal close buttons
@@ -167,7 +176,7 @@ function handleLogin(e) {
 }
 
 // Handle signup
-function handleSignup(e) {
+async function handleSignup(e) {
     e.preventDefault();
     
     const name = document.getElementById('signup-name').value;
@@ -202,15 +211,43 @@ function handleSignup(e) {
         createdAt: new Date().toISOString()
     };
     
-    users.push(newUser);
-    localStorage.setItem('users', JSON.stringify(users));
-    
-    currentUser = newUser;
-    localStorage.setItem('currentUser', JSON.stringify(newUser));
-    updateNavForLoggedInUser();
-    closeModal(signupModal);
-    showMessage('Account created successfully!', 'success');
-    signupForm.reset();
+    try {
+        // Send to server (MongoDB)
+        const response = await fetch(`${API_BASE_URL}/api/users`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(newUser)
+        });
+        
+        if (response.ok) {
+            // Also store locally for immediate feedback
+            users.push(newUser);
+            localStorage.setItem('users', JSON.stringify(users));
+            
+            currentUser = newUser;
+            localStorage.setItem('currentUser', JSON.stringify(newUser));
+            updateNavForLoggedInUser();
+            closeModal(signupModal);
+            showMessage('Account created successfully!', 'success');
+            signupForm.reset();
+        } else {
+            throw new Error('Failed to create user on server');
+        }
+    } catch (error) {
+        console.error('Error creating user:', error);
+        // Fallback to localStorage only
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        currentUser = newUser;
+        localStorage.setItem('currentUser', JSON.stringify(newUser));
+        updateNavForLoggedInUser();
+        closeModal(signupModal);
+        showMessage('Account created successfully! (Offline mode)', 'success');
+        signupForm.reset();
+    }
 }
 
 // Handle logout
@@ -220,7 +257,7 @@ function logout() {
 }
 
 // Handle idea submission
-function handleIdeaSubmission(e) {
+async function handleIdeaSubmission(e) {
     e.preventDefault();
     
     if (!currentUser) {
@@ -243,11 +280,35 @@ function handleIdeaSubmission(e) {
         status: 'pending'
     };
     
-    ideas.push(idea);
-    localStorage.setItem('ideas', JSON.stringify(ideas));
-    
-    ideaForm.reset();
-    showMessage('Idea submitted successfully!', 'success');
+    try {
+        // Send to server (MongoDB)
+        const response = await fetch(`${API_BASE_URL}/api/ideas`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(idea)
+        });
+        
+        if (response.ok) {
+            // Also store locally for immediate feedback
+            ideas.push(idea);
+            localStorage.setItem('ideas', JSON.stringify(ideas));
+            
+            ideaForm.reset();
+            showMessage('Idea submitted successfully!', 'success');
+        } else {
+            throw new Error('Failed to submit idea to server');
+        }
+    } catch (error) {
+        console.error('Error submitting idea:', error);
+        // Fallback to localStorage only
+        ideas.push(idea);
+        localStorage.setItem('ideas', JSON.stringify(ideas));
+        
+        ideaForm.reset();
+        showMessage('Idea submitted successfully! (Offline mode)', 'success');
+    }
 }
 
 

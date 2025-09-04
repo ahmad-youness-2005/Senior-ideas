@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Connection</title>
+</head>
+<body>
+    <h1>Test Data Flow</h1>
+    <button onclick="testIdeaSubmission()">Test Idea Submission</button>
+    <button onclick="testUserCreation()">Test User Creation</button>
+    <button onclick="testDataRetrieval()">Test Data Retrieval</button>
+    <div id="results"></div>
+
+    <script>
+        async function testIdeaSubmission() {
+            const idea = {
+                id: 'test-idea-' + Date.now(),
+                title: 'Test Idea',
+                category: 'technology',
+                description: 'This is a test idea to verify the connection',
+                impact: 'Testing the data flow',
+                contact: 'test@example.com',
+                author: 'Test User',
+                authorEmail: 'test@example.com',
+                createdAt: new Date().toISOString(),
+                status: 'pending'
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/ideas', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(idea)
+                });
+
+                if (response.ok) {
+                    document.getElementById('results').innerHTML += '<p style="color: green;">✓ Idea submission successful!</p>';
+                } else {
+                    document.getElementById('results').innerHTML += '<p style="color: red;">✗ Idea submission failed</p>';
+                }
+            } catch (error) {
+                document.getElementById('results').innerHTML += '<p style="color: red;">✗ Error: ' + error.message + '</p>';
+            }
+        }
+
+        async function testUserCreation() {
+            const user = {
+                id: 'test-user-' + Date.now(),
+                name: 'Test User',
+                email: 'test@example.com',
+                password: 'test123',
+                isAdmin: false,
+                createdAt: new Date().toISOString()
+            };
+
+            try {
+                const response = await fetch('http://localhost:3000/api/users', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(user)
+                });
+
+                if (response.ok) {
+                    document.getElementById('results').innerHTML += '<p style="color: green;">✓ User creation successful!</p>';
+                } else {
+                    document.getElementById('results').innerHTML += '<p style="color: red;">✗ User creation failed</p>';
+                }
+            } catch (error) {
+                document.getElementById('results').innerHTML += '<p style="color: red;">✗ Error: ' + error.message + '</p>';
+            }
+        }
+
+        async function testDataRetrieval() {
+            try {
+                const [ideasResponse, usersResponse] = await Promise.all([
+                    fetch('http://localhost:3000/api/ideas'),
+                    fetch('http://localhost:3000/api/users')
+                ]);
+
+                if (ideasResponse.ok && usersResponse.ok) {
+                    const ideas = await ideasResponse.json();
+                    const users = await usersResponse.json();
+                    document.getElementById('results').innerHTML += `<p style="color: green;">✓ Data retrieval successful! Found ${ideas.length} ideas and ${users.length} users</p>`;
+                } else {
+                    document.getElementById('results').innerHTML += '<p style="color: red;">✗ Data retrieval failed</p>';
+                }
+            } catch (error) {
+                document.getElementById('results').innerHTML += '<p style="color: red;">✗ Error: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>
