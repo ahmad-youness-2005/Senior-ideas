@@ -9,7 +9,7 @@ const ALLOWED_ADMIN_EMAILS = [
     'Adamyf2005@hotmail.com',
     'Hussein.m.jaber23@gmail.com',
     'ay589641@gmail.com',
-    'Y2005baba@gmail.com'
+    'y2005baba@gmail.com'
 ];
 
 // DOM Elements
